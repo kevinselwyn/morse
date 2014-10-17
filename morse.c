@@ -24,6 +24,12 @@ void num2word(char **word, int num) {
 
 	tmp = malloc(sizeof(char) * length + 1);
 
+	if (!*word) {
+		*word = malloc(sizeof(char) * length + 1);
+	}
+
+	strcpy(*word, "");
+
 	for (i = length - 1, l = 0; i >= l; i--) {
 		bit = (num >> i) & 0x01;
 		tmp[counter++] = (bit) ? '-' : '.';
