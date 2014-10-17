@@ -13,14 +13,16 @@ void num2word(char **word, int num) {
 	int length = 0, counter = 0, bit = 0, i = 0, l = 0;
 	char *tmp = NULL;
 
-	length = (num & 0xE0) >> 5;
-	tmp = malloc(sizeof(char) * length + 1);
+	for (i = 7, l = 0; i >= l; i--) {
+		bit = (num >> i) & 0x01;
 
-	if (!*word) {
-		*word = malloc(sizeof(char) * length + 1);
+		if (!bit) {
+			length = i;
+			i = l;
+		}
 	}
 
-	strcpy(*word, "");
+	tmp = malloc(sizeof(char) * length + 1);
 
 	for (i = length - 1, l = 0; i >= l; i--) {
 		bit = (num >> i) & 0x01;
@@ -64,11 +66,11 @@ int word2num(char *word) {
 	int length = 0, num = 0, bit = 0, i = 0, l = 0;
 
 	length = (int)strlen(word);
-	num += (length << 5);
+	num = 0xFF - (0x01 << length);
 
 	for (i = 0, l = length; i < l; i++) {
-		bit = (word[i] == '-') ? 1 : 0;
-		num += (bit << (length - i - 1));
+		bit = (word[i] == '.') ? 1 : 0;
+		num -= (bit << (length - i - 1));
 	}
 
 	return num;
@@ -190,7 +192,7 @@ void text2morse(char **morse, char *text) {
 			chr -= 0x20;
 		}
 
-		if ((chr >= 'A' && chr <= 'Z') || chr == ' ') {
+		if ((chr >= 'A' && chr <= 'Z') || (chr >= '0' && chr <= '9') || chr == ' ') {
 			clean_text[counter++] = chr;
 		}
 	}
